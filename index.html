@@ -380,6 +380,12 @@
         <div class="nl-input-section">
             <h3>🤖 智能记录（自然语言输入）</h3>
             <textarea id="naturalLanguageInput" placeholder="例如：今天我吃了番茄炒蛋20g和米饭150g，跑步了30分钟，体重70kg"></textarea>
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 18px; padding: 15px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); border-radius: 12px; border: 2px solid #e0e0e0;">
+                <label style="font-weight: 600; color: #667eea; font-size: 15px; display: flex; align-items: center; gap: 6px;">
+                    📅 选择日期：
+                </label>
+                <input type="date" id="nlDateInput" onchange="syncDates(this)" style="flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; font-weight: 500; color: #333; background: white; cursor: pointer; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)';" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none';">
+            </div>
             <button class="btn" onclick="parseNaturalLanguage()">🤖 智能解析并添加</button>
             <div class="nl-examples">
                 <p><strong>💡 示例：</strong></p>
@@ -412,8 +418,8 @@
             <div class="input-card">
                 <h3>📊 体重记录</h3>
                 <div class="input-group">
-                    <label>日期</label>
-                    <input type="date" id="weightDate" value="">
+                    <label>📅 日期</label>
+                    <input type="date" id="weightDate" value="" onchange="syncDates(this)">
                 </div>
                 <div class="input-group">
                     <label>体重 (kg)</label>
@@ -425,8 +431,8 @@
             <div class="input-card">
                 <h3>🥗 饮食记录</h3>
                 <div class="input-group">
-                    <label>日期</label>
-                    <input type="date" id="dietDate" value="">
+                    <label>📅 日期</label>
+                    <input type="date" id="dietDate" value="" onchange="syncDates(this)">
                 </div>
                 <div class="input-group">
                     <label>输入方式</label>
@@ -476,8 +482,8 @@
             <div class="input-card">
                 <h3>💪 运动记录</h3>
                 <div class="input-group">
-                    <label>日期</label>
-                    <input type="date" id="exerciseDate" value="">
+                    <label>📅 日期</label>
+                    <input type="date" id="exerciseDate" value="" onchange="syncDates(this)">
                 </div>
                 <div class="input-group">
                     <label>输入方式</label>
@@ -548,9 +554,11 @@
             <div class="chart-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3 style="margin: 0;">📊 营养构成分析</h3>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <label for="nutritionDate" style="font-size: 0.9em; color: #667eea;">选择日期：</label>
-                        <input type="date" id="nutritionDate" onchange="updateNutritionPieChartForDate()" style="padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9em;">
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); border-radius: 10px; border: 2px solid #e0e0e0;">
+                        <label for="nutritionDate" style="font-size: 0.95em; color: #667eea; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                            📅 选择日期：
+                        </label>
+                        <input type="date" id="nutritionDate" onchange="syncDates(this); updateNutritionPieChartForDate();" style="flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95em; font-weight: 500; background: white; cursor: pointer; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)';" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none';">
                     </div>
                 </div>
                 <div class="chart-container">
@@ -695,6 +703,23 @@
             }
         }
 
+        // 同步所有日期选择器
+        function syncDates(sourceDateInput) {
+            const selectedDate = sourceDateInput.value;
+            const allDateInputs = ['nlDateInput', 'weightDate', 'dietDate', 'exerciseDate', 'nutritionDate'];
+            
+            allDateInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input && input.id !== sourceDateInput.id) {
+                    input.value = selectedDate;
+                }
+            });
+
+            // 更新统计卡片和营养分析
+            updateStatsForDate(selectedDate);
+            updateNutritionPieChartForDate();
+        }
+
         // 快速选择食物
         function quickSelectFood(food) {
             const foodInput = document.getElementById('foodDescription');
@@ -769,8 +794,9 @@
                 const content = data.choices[0].message.content;
                 const result = JSON.parse(content);
 
-                // 添加记录
-                const today = new Date().toISOString().split('T')[0];
+                // 获取选择的日期，如果没有选择则使用今天
+                const selectedDate = document.getElementById('nlDateInput').value;
+                const today = selectedDate || new Date().toISOString().split('T')[0];
 
                 // 添加体重
                 if (result.weight !== null) {
@@ -2411,10 +2437,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             initDates();
             updateUI();
-            
+
             // 初始化统计卡片显示今天的数据
             const today = new Date().toISOString().split('T')[0];
             updateStatsForDate(today);
+
+            // 设置智能记录日期选择器默认为今天
+            document.getElementById('nlDateInput').value = today;
 
             // 设置实时更新（每30秒检查一次数据变化）
             setInterval(updateUI, 30000);
