@@ -596,7 +596,15 @@
         </div>
 
         <div class="history-section">
-            <h3>📋 历史记录</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0;">📋 历史记录</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="clearData()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); font-size: 0.9em; padding: 10px 20px;">🗑️ 清空数据</button>
+                    <button class="btn" onclick="exportData()" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); font-size: 0.9em; padding: 10px 20px;">📤 导出数据</button>
+                    <button class="btn" onclick="document.getElementById('importFileInput').click()" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); font-size: 0.9em; padding: 10px 20px;">📥 导入数据</button>
+                    <input type="file" id="importFileInput" accept=".json" onchange="importData(event)" style="display: none;">
+                </div>
+            </div>
             <table class="history-table">
                 <thead>
                     <tr>
@@ -2288,6 +2296,115 @@
                 console.error('分析失败:', error);
                 analysisDiv.innerHTML = `<p style="color: #e74c3c;">❌ 分析失败：${error.message}</p>`;
             }
+        }
+
+        // 清空数据
+        function clearData() {
+            if (healthData.length === 0) {
+                alert('暂无数据可清空！');
+                return;
+            }
+
+            const confirmMessage = `确定要清空所有健康数据吗？\n\n这将删除 ${healthData.length} 条记录。\n\n此操作不可撤销！`;
+            
+            if (confirm(confirmMessage)) {
+                try {
+                    healthData = [];
+                    saveData();
+                    updateUI();
+                    
+                    alert('✅ 数据已清空！');
+                } catch (error) {
+                    console.error('清空数据失败:', error);
+                    alert('❌ 清空数据失败：' + error.message);
+                }
+            }
+        }
+
+        // 导出数据
+        function exportData() {
+            if (healthData.length === 0) {
+                alert('暂无数据可导出！');
+                return;
+            }
+
+            try {
+                // 准备导出数据
+                const exportData = {
+                    version: '1.0',
+                    exportDate: new Date().toISOString(),
+                    data: healthData
+                };
+
+                // 转换为JSON字符串
+                const jsonString = JSON.stringify(exportData, null, 2);
+                
+                // 创建Blob对象
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                
+                // 创建下载链接
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const today = new Date().toISOString().split('T')[0];
+                a.href = url;
+                a.download = `健康追踪数据_${today}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('✅ 数据导出成功！\n\n文件名：健康追踪数据_' + today + '.json\n\n请妥善保存此文件，用于将来恢复数据。');
+            } catch (error) {
+                console.error('导出失败:', error);
+                alert('❌ 导出失败：' + error.message);
+            }
+        }
+
+        // 导入数据
+        function importData(event) {
+            const file = event.target.files[0];
+            
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // 验证数据格式
+                    if (!importedData.version || !importedData.data || !Array.isArray(importedData.data)) {
+                        throw new Error('数据格式不正确！');
+                    }
+
+                    // 确认导入
+                    const recordCount = importedData.data.length;
+                    const confirmMessage = `即将导入 ${recordCount} 条记录。\n\n导入后会覆盖当前所有数据，确定要继续吗？`;
+                    
+                    if (confirm(confirmMessage)) {
+                        // 保存导入的数据
+                        healthData = importedData.data;
+                        saveData();
+                        updateUI();
+                        
+                        alert('✅ 数据导入成功！\n\n已导入 ' + recordCount + ' 条记录。');
+                    }
+                } catch (error) {
+                    console.error('导入失败:', error);
+                    alert('❌ 导入失败：\n' + error.message + '\n\n请确保文件是正确的健康追踪器导出的JSON文件。');
+                }
+                
+                // 清空文件输入，允许重复导入同一文件
+                event.target.value = '';
+            };
+            
+            reader.onerror = function() {
+                alert('❌ 文件读取失败！请重试。');
+            };
+            
+            reader.readAsText(file);
         }
 
         // 初始化
