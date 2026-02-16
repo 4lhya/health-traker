@@ -2,7 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <meta name="application-name" content="健康追踪器">
     <title>健康追踪器</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -351,24 +355,246 @@
             to { transform: rotate(360deg); }
         }
 
+        /* 触摸优化 */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        input,
+        textarea,
+        select,
+        button {
+            -webkit-appearance: none;
+            -webkit-border-radius: 0;
+        }
+
+        .btn {
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .quick-select-item {
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* 滚动优化 */
+        .container {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 防止iOS Safari的双击缩放 */
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        input[type="date"],
+        textarea {
+            font-size: 16px !important;
+        }
+
+        /* 移动端适配 */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .container {
-                padding: 20px;
+                padding: 15px;
+                border-radius: 15px;
             }
 
             h1 {
-                font-size: 2em;
+                font-size: 1.8em;
+                margin-bottom: 25px;
             }
 
             .input-section,
             .stats-section,
             .charts-section {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .input-card {
+                padding: 20px;
+            }
+
+            .input-card h3 {
+                font-size: 1.2em;
+            }
+
+            .chart-card {
+                padding: 20px;
+            }
+
+            .chart-card h3 {
+                font-size: 1.1em;
             }
 
             .chart-container {
-                height: 300px;
+                height: 250px;
             }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-card .value {
+                font-size: 1.8em;
+            }
+
+            .history-section {
+                padding: 20px;
+            }
+
+            .history-section h3 {
+                font-size: 1.1em;
+            }
+
+            .history-table {
+                font-size: 0.85em;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 10px 8px;
+            }
+
+            .btn {
+                padding: 12px;
+                font-size: 1em;
+            }
+
+            .input-group input,
+            .input-group select {
+                padding: 10px 12px;
+                font-size: 0.95em;
+            }
+
+            .nl-input-section {
+                padding: 20px;
+            }
+
+            .nl-input-section h3 {
+                font-size: 1.3em;
+            }
+
+            .nl-input-section textarea {
+                min-height: 100px;
+                font-size: 1em;
+            }
+
+            .quick-select-item {
+                font-size: 0.8em;
+                padding: 5px 12px;
+            }
+
+            /* 历史记录表格在小屏幕上改为卡片式布局 */
+            .history-table thead {
+                display: none;
+            }
+
+            .history-table tbody tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 15px;
+                background: #fff;
+            }
+
+            .history-table tbody td {
+                display: block;
+                text-align: left;
+                padding: 8px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .history-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #667eea;
+                display: inline-block;
+                width: 100px;
+                margin-right: 10px;
+            }
+
+            .history-table tbody td:last-child {
+                border-bottom: none;
+                padding-top: 15px;
+            }
+
+            /* 历史记录按钮区域优化 */
+            .history-section > div:first-child {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .history-section > div:first-child > div {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .delete-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .input-card,
+            .chart-card,
+            .history-section {
+                padding: 15px;
+            }
+
+            .stat-card .value {
+                font-size: 1.5em;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* 底部安全区域适配（iOS 刘海屏） */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .container {
+                padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
         }
     </style>
 </head>
@@ -510,10 +736,6 @@
                             <span class="quick-select-item" onclick="quickSelectExercise('跳绳15分钟')">⏱️ 跳绳15分钟</span>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label>体重（用于更精确计算）</label>
-                        <input type="number" id="userWeight" step="0.1" placeholder="例如：70">
-                    </div>
                     <button class="btn" onclick="calculateExerciseCalories()" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">🤖 AI 计算卡路里</button>
                     <div id="exerciseCaloriesResult" style="margin-top: 15px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px; display: none;"></div>
                 </div>
@@ -642,10 +864,27 @@
 
         <div class="history-section">
             <h3>🤖 AI 整体数据分析</h3>
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(102, 126, 234, 0.05); border-radius: 10px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #667eea;">📝 自定义分析提示词（可选）</label>
+                <textarea id="customAnalysisPrompt" placeholder="例如：请重点关注我的饮食结构是否均衡..." style="width: 100%; min-height: 80px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95em; font-family: inherit; resize: vertical; background: white;"></textarea>
+                <button class="btn" onclick="saveCustomAnalysisPrompt()" style="margin-top: 10px; background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); padding: 10px; font-size: 0.9em;">💾 保存提示词</button>
+            </div>
             <div id="overallAnalysis" style="min-height: 150px; padding: 20px; background: rgba(102, 126, 234, 0.05); border-radius: 15px; border-left: 4px solid #667eea; margin-bottom: 20px;">
                 <p style="color: #999; font-style: italic;">点击下方按钮获取AI整体数据分析...</p>
             </div>
             <button class="btn" onclick="analyzeOverallData()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 1em; padding: 15px;">🤖 分析整体数据</button>
+        </div>
+
+        <div class="history-section">
+            <h3>🤖 AI 智能问答</h3>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #667eea;">💬 提问（AI将基于你的所有健康数据回答）</label>
+                <textarea id="aiQuestion" placeholder="例如：我这周的平均卡路里摄入是多少？我的体重变化趋势如何？如果我想减重，应该怎么调整饮食和运动？" style="width: 100%; min-height: 100px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95em; font-family: inherit; resize: vertical; background: white;"></textarea>
+                <button class="btn" onclick="askAIQuestion()" style="margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">🤖 提问</button>
+            </div>
+            <div id="aiAnswer" style="min-height: 150px; padding: 20px; background: rgba(102, 126, 234, 0.05); border-radius: 15px; border-left: 4px solid #667eea;">
+                <p style="color: #999; font-style: italic;">输入你的问题，AI将基于你的所有健康数据为你解答...</p>
+            </div>
         </div>
     </div>
 
@@ -661,6 +900,15 @@
 
         // 解析后的运动卡路里
         let parsedExerciseCalories = null;
+
+        // 是否显示单个删除按钮
+        let showDeleteButtons = false;
+
+        // 切换显示删除按钮
+        function toggleShowDeleteButtons() {
+            showDeleteButtons = !showDeleteButtons;
+            updateHistoryTable();
+        }
 
         // 初始化日期
         function initDates() {
@@ -700,6 +948,12 @@
             }
             if (!localStorage.getItem('modelName')) {
                 localStorage.setItem('modelName', 'gpt-4o-mini');
+            }
+
+            // 加载保存的自定义分析提示词
+            const savedPrompt = localStorage.getItem('customAnalysisPrompt');
+            if (savedPrompt) {
+                document.getElementById('customAnalysisPrompt').value = savedPrompt;
             }
         }
 
@@ -774,11 +1028,11 @@
                         messages: [
                             {
                                 role: 'system',
-                                content: '你是一个健康记录助手。请解析用户的自然语言输入，提取体重、食物和运动信息。只返回JSON格式，不要任何其他文字。'
+                                content: '你是一个健康记录助手。请解析用户的自然语言输入，提取体重、食物和运动信息。对于食物，必须根据食物名称和重量自动计算蛋白质、脂肪、碳水化合物和卡路里。只返回JSON格式，不要任何其他文字。'
                             },
                             {
                                 role: 'user',
-                                content: `请解析以下内容，返回JSON格式：\n${input}\n\n返回格式：\n{\n  "weight": 体重数字(如果没有则为null),\n  "foods": [{\n    "name": "食物名称",\n    "description": "食物描述",\n    "protein": 蛋白质克数,\n    "fat": 脂肪克数,\n    "carbs": 碳水克数,\n    "calories": 卡路里\n  }],\n  "exercises": [{\n    "description": "运动描述",\n    "calories": 消耗卡路里\n  }]\n}\n\n如果某项没有则为null或空数组。`
+                                content: `请解析以下内容，返回JSON格式：\n${input}\n\n返回格式：\n{\n  "weight": 体重数字(如果没有则为null),\n  "foods": [{\n    "name": "食物名称",\n    "description": "食物描述(包含重量)",\n    "protein": 蛋白质克数(根据食物和重量计算),\n    "fat": 脂肪克数(根据食物和重量计算),\n    "carbs": 碳水克数(根据食物和重量计算),\n    "calories": 卡路里(根据食物和重量计算)\n  }],\n  "exercises": [{\n    "description": "运动描述",\n    "calories": 消耗卡路里\n  }]\n}\n\n重要：对于食物，必须根据食物营养成分表和实际重量计算准确的蛋白质、脂肪、碳水化合物和卡路里数值，不能为null。\n\n如果某项没有则为null或空数组。`
                             }
                         ],
                         temperature: 0.3
@@ -834,7 +1088,7 @@
                         existingEntry.diet.calories += totalCalories;
                         result.foods.forEach(food => {
                             existingEntry.diet.foodItems.push({
-                                description: food.name || food.description,
+                                description: food.name || food.description || '未知食物',
                                 protein: food.protein || 0,
                                 fat: food.fat || 0,
                                 carbs: food.carbs || 0,
@@ -845,7 +1099,7 @@
                         healthData.push({
                             date: today,
                             weight: null,
-                            diet: { protein: totalProtein, fat: totalFat, carbs: totalCarbs, calories: totalCalories, foodItems: result.foods.map(food => ({ description: food.name || food.description, protein: food.protein || 0, fat: food.fat || 0, carbs: food.carbs || 0, calories: food.calories || 0 })) },
+                            diet: { protein: totalProtein, fat: totalFat, carbs: totalCarbs, calories: totalCalories, foodItems: result.foods.map(food => ({ description: food.name || food.description || '未知食物', protein: food.protein || 0, fat: food.fat || 0, carbs: food.carbs || 0, calories: food.calories || 0 })) },
                             exercise: null
                         });
                     }
@@ -892,14 +1146,19 @@
                 if (result.foods && result.foods.length > 0) {
                     message += '🍽️ 食物详情：\n';
                     result.foods.forEach(food => {
-                        message += `• ${food.name || food.description} (${food.calories}kcal)\n`;
+                        const foodName = food.name || food.description || '未知食物';
+                        message += `• ${foodName}\n`;
+                        message += `  蛋白质：${food.protein || 0}g\n`;
+                        message += `  脂肪：${food.fat || 0}g\n`;
+                        message += `  碳水：${food.carbs || 0}g\n`;
+                        message += `  卡路里：${food.calories || 0}kcal\n`;
                     });
                     message += `\n`;
                 }
                 if (result.exercises && result.exercises.length > 0) {
                     message += '💪 运动详情：\n';
                     result.exercises.forEach(exercise => {
-                        message += `• ${exercise.description} (${exercise.calories}kcal)\n`;
+                        message += `• ${exercise.description} - 消耗：${exercise.calories || 0}kcal\n`;
                     });
                     message += `\n`;
                 }
@@ -984,6 +1243,18 @@
             }
         }
 
+        // 保存自定义分析提示词
+        function saveCustomAnalysisPrompt() {
+            const prompt = document.getElementById('customAnalysisPrompt').value.trim();
+            if (prompt) {
+                localStorage.setItem('customAnalysisPrompt', prompt);
+                alert('✅ 提示词已保存！');
+            } else {
+                localStorage.removeItem('customAnalysisPrompt');
+                alert('✅ 提示词已清空，将使用默认提示词。');
+            }
+        }
+
         // 切换饮食输入模式
         function toggleDietInputMode() {
             const mode = document.getElementById('dietInputMode').value;
@@ -1035,11 +1306,11 @@
                         messages: [
                             {
                                 role: 'system',
-                                content: '你是一个营养学专家。请分析用户输入的食物，精确计算营养成分。只返回JSON格式，不要任何其他文字。'
+                                content: '你是一个营养学专家。请分析用户输入的食物，精确计算营养成分。如果是多个食物，请分别返回每个食物的营养成分。只返回JSON格式，不要任何其他文字。'
                             },
                             {
                                 role: 'user',
-                                content: `请分析以下食物的营养成分，返回JSON格式：\n食物：${foodDescription}\n\n返回格式：\n{\n  "protein": 蛋白质克数(数字),\n  "fat": 脂肪克数(数字),\n  "carbs": 碳水化合物克数(数字),\n  "calories": 总卡路里(数字)\n}\n\n请根据实际食物营养成分准确计算。`
+                                content: `请分析以下食物的营养成分，返回JSON格式：\n食物：${foodDescription}\n\n返回格式（支持单个或多个食物）：\n{\n  "foods": [\n    {\n      "name": "食物名称",\n      "description": "食物描述(包含重量)",\n      "protein": 蛋白质克数(数字),\n      "fat": 脂肪克数(数字),\n      "carbs": 碳水化合物克数(数字),\n      "calories": 卡路里(数字)\n    }\n  ]\n}\n\n如果只有一个食物，foods数组中只包含一个元素。请根据实际食物营养成分准确计算。`
                             }
                         ],
                         temperature: 0.3
@@ -1053,20 +1324,34 @@
                 }
 
                 const content = data.choices[0].message.content;
-                const nutrition = JSON.parse(content);
+                const nutritionData = JSON.parse(content);
 
                 // 保存解析结果
-                parsedNutrition = nutrition;
+                parsedNutrition = nutritionData.foods;
+
+                // 计算总营养
+                const totalProtein = nutritionData.foods.reduce((sum, food) => sum + (food.protein || 0), 0);
+                const totalFat = nutritionData.foods.reduce((sum, food) => sum + (food.fat || 0), 0);
+                const totalCarbs = nutritionData.foods.reduce((sum, food) => sum + (food.carbs || 0), 0);
+                const totalCalories = nutritionData.foods.reduce((sum, food) => sum + (food.calories || 0), 0);
 
                 // 显示结果
-                resultDiv.innerHTML = `
-                    <h4 style="color: #667eea; margin-bottom: 10px;">✅ 分析结果</h4>
-                    <p><strong>蛋白质：</strong>${nutrition.protein}g</p>
-                    <p><strong>脂肪：</strong>${nutrition.fat}g</p>
-                    <p><strong>碳水：</strong>${nutrition.carbs}g</p>
-                    <p><strong>总卡路里：</strong>${nutrition.calories}kcal</p>
+                let resultHTML = '<h4 style="color: #667eea; margin-bottom: 10px;">✅ 分析结果</h4>';
+                nutritionData.foods.forEach((food, index) => {
+                    resultHTML += `
+                        <div style="background: rgba(102, 126, 234, 0.05); padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+                            <p style="font-weight: 600; color: #667eea;">${food.name || food.description}</p>
+                            <p>蛋白质：${food.protein}g | 脂肪：${food.fat}g | 碳水：${food.carbs}g | 卡路里：${food.calories}kcal</p>
+                        </div>
+                    `;
+                });
+                resultHTML += `
+                    <div style="background: rgba(39, 174, 96, 0.1); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                        <p style="font-weight: 600; color: #27ae60;">总计：蛋白质 ${totalProtein}g | 脂肪 ${totalFat}g | 碳水 ${totalCarbs}g | 卡路里 ${totalCalories}kcal</p>
+                    </div>
                     <p style="color: #27ae60; margin-top: 10px;">点击"添加饮食"按钮保存</p>
                 `;
+                resultDiv.innerHTML = resultHTML;
 
             } catch (error) {
                 console.error('分析失败:', error);
@@ -1080,7 +1365,6 @@
             const apiEndpoint = localStorage.getItem('apiEndpoint') || 'https://vg.v1api.cc/v1';
             const modelName = localStorage.getItem('modelName') || 'gpt-4o-mini';
             const exerciseDescription = document.getElementById('exerciseDescription').value.trim();
-            const userWeight = document.getElementById('userWeight').value;
 
             if (!apiKey) {
                 alert('请先设置 API Key');
@@ -1108,11 +1392,11 @@
                         messages: [
                             {
                                 role: 'system',
-                                content: '你是一个健身专家。请计算用户输入的运动消耗的卡路里。只返回JSON格式，不要任何其他文字。'
+                                content: '你是一个健身专家。请计算用户输入的运动消耗的卡路里。如果是多个运动，请分别返回每个运动的卡路里。只返回JSON格式，不要任何其他文字。'
                             },
                             {
                                 role: 'user',
-                                content: `请计算以下运动消耗的卡路里，返回JSON格式：\n运动：${exerciseDescription}${userWeight ? `\n体重：${userWeight}kg` : ''}\n\n返回格式：\n{\n  "calories": 消耗卡路里(数字)\n}\n\n请根据运动类型、时长和体重精确计算。`
+                                content: `请计算以下运动消耗的卡路里，返回JSON格式：\n运动：${exerciseDescription}\n\n返回格式（支持单个或多个运动）：\n{\n  "exercises": [\n    {\n      "description": "运动描述",\n      "calories": 消耗卡路里(数字)\n    }\n  ]\n}\n\n如果只有一个运动，exercises数组中只包含一个元素。请根据运动类型和时长精确计算（按70kg体重估算）。`
                             }
                         ],
                         temperature: 0.3
@@ -1126,17 +1410,31 @@
                 }
 
                 const content = data.choices[0].message.content;
-                const caloriesData = JSON.parse(content);
+                const exerciseData = JSON.parse(content);
 
                 // 保存解析结果
-                parsedExerciseCalories = caloriesData.calories;
+                parsedExerciseCalories = exerciseData.exercises;
+
+                // 计算总卡路里
+                const totalCalories = exerciseData.exercises.reduce((sum, exercise) => sum + (exercise.calories || 0), 0);
 
                 // 显示结果
-                resultDiv.innerHTML = `
-                    <h4 style="color: #667eea; margin-bottom: 10px;">✅ 计算结果</h4>
-                    <p><strong>消耗卡路里：</strong>${caloriesData.calories}kcal</p>
+                let resultHTML = '<h4 style="color: #667eea; margin-bottom: 10px;">✅ 计算结果</h4>';
+                exerciseData.exercises.forEach((exercise, index) => {
+                    resultHTML += `
+                        <div style="background: rgba(102, 126, 234, 0.05); padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+                            <p style="font-weight: 600; color: #667eea;">${exercise.description}</p>
+                            <p>消耗卡路里：${exercise.calories}kcal</p>
+                        </div>
+                    `;
+                });
+                resultHTML += `
+                    <div style="background: rgba(39, 174, 96, 0.1); padding: 10px; border-radius: 8px; margin-top: 10px;">
+                        <p style="font-weight: 600; color: #27ae60;">总计消耗：${totalCalories}kcal</p>
+                    </div>
                     <p style="color: #27ae60; margin-top: 10px;">点击"添加运动"按钮保存</p>
                 `;
+                resultDiv.innerHTML = resultHTML;
 
             } catch (error) {
                 console.error('计算失败:', error);
@@ -1176,7 +1474,12 @@
             const date = document.getElementById('dietDate').value;
             const mode = document.getElementById('dietInputMode').value;
 
-            let protein, fat, carbs, calories, foodDescription;
+            if (!date) {
+                alert('请选择日期');
+                return;
+            }
+
+            let foods = [];
 
             if (mode === 'smart') {
                 // 使用AI解析的结果
@@ -1184,51 +1487,69 @@
                     alert('请先点击"AI 解析食物"按钮');
                     return;
                 }
-                protein = parsedNutrition.protein;
-                fat = parsedNutrition.fat;
-                carbs = parsedNutrition.carbs;
-                calories = parsedNutrition.calories;
-                foodDescription = document.getElementById('foodDescription').value.trim();
+                foods = parsedNutrition;
             } else {
                 // 手动输入
-                protein = parseFloat(document.getElementById('protein').value) || 0;
-                fat = parseFloat(document.getElementById('fat').value) || 0;
-                carbs = parseFloat(document.getElementById('carbs').value) || 0;
-                calories = (protein * 4) + (fat * 9) + (carbs * 4);
-                foodDescription = `手动输入：蛋白质${protein}g，脂肪${fat}g，碳水${carbs}g`;
+                const protein = parseFloat(document.getElementById('protein').value) || 0;
+                const fat = parseFloat(document.getElementById('fat').value) || 0;
+                const carbs = parseFloat(document.getElementById('carbs').value) || 0;
+                const calories = (protein * 4) + (fat * 9) + (carbs * 4);
+                foods = [{
+                    name: '手动输入',
+                    description: `手动输入：蛋白质${protein}g，脂肪${fat}g，碳水${carbs}g`,
+                    protein,
+                    fat,
+                    carbs,
+                    calories
+                }];
             }
 
-            if (!date) {
-                alert('请选择日期');
-                return;
-            }
-
-            if (protein === 0 && fat === 0 && carbs === 0) {
+            if (foods.length === 0) {
                 alert('请至少输入一项营养数据');
                 return;
             }
+
+            // 计算总营养
+            const totalProtein = foods.reduce((sum, food) => sum + (food.protein || 0), 0);
+            const totalFat = foods.reduce((sum, food) => sum + (food.fat || 0), 0);
+            const totalCarbs = foods.reduce((sum, food) => sum + (food.carbs || 0), 0);
+            const totalCalories = foods.reduce((sum, food) => sum + (food.calories || 0), 0);
 
             const existingEntry = healthData.find(entry => entry.date === date);
             if (existingEntry) {
                 if (!existingEntry.diet) {
                     existingEntry.diet = { protein: 0, fat: 0, carbs: 0, calories: 0, foodItems: [] };
                 }
-                existingEntry.diet.protein += protein;
-                existingEntry.diet.fat += fat;
-                existingEntry.diet.carbs += carbs;
-                existingEntry.diet.calories += calories;
-                existingEntry.diet.foodItems.push({
-                    description: foodDescription,
-                    protein,
-                    fat,
-                    carbs,
-                    calories
+                existingEntry.diet.protein += totalProtein;
+                existingEntry.diet.fat += totalFat;
+                existingEntry.diet.carbs += totalCarbs;
+                existingEntry.diet.calories += totalCalories;
+                foods.forEach(food => {
+                    existingEntry.diet.foodItems.push({
+                        description: food.name || food.description,
+                        protein: food.protein || 0,
+                        fat: food.fat || 0,
+                        carbs: food.carbs || 0,
+                        calories: food.calories || 0
+                    });
                 });
             } else {
                 healthData.push({
                     date: date,
                     weight: null,
-                    diet: { protein, fat, carbs, calories, foodItems: [{ description: foodDescription, protein, fat, carbs, calories }] },
+                    diet: { 
+                        protein: totalProtein, 
+                        fat: totalFat, 
+                        carbs: totalCarbs, 
+                        calories: totalCalories, 
+                        foodItems: foods.map(food => ({ 
+                            description: food.name || food.description, 
+                            protein: food.protein || 0, 
+                            fat: food.fat || 0, 
+                            carbs: food.carbs || 0, 
+                            calories: food.calories || 0 
+                        })) 
+                    },
                     exercise: null
                 });
             }
@@ -1237,7 +1558,13 @@
             updateUI();
 
             // 显示添加成功信息
-            alert(`✅ 饮食添加成功！\n\n食物：${foodDescription}\n蛋白质：${protein}g\n脂肪：${fat}g\n碳水：${carbs}g\n卡路里：${calories}kcal`);
+            let message = '✅ 饮食添加成功！\n\n';
+            foods.forEach(food => {
+                message += `• ${food.name || food.description}\n`;
+                message += `  蛋白质：${food.protein}g，脂肪：${food.fat}g，碳水：${food.carbs}g，卡路里：${food.calories}kcal\n`;
+            });
+            message += `\n总计：蛋白质 ${totalProtein}g，脂肪 ${totalFat}g，碳水 ${totalCarbs}g，卡路里 ${totalCalories}kcal`;
+            alert(message);
 
             clearDietInput();
         }
@@ -1247,7 +1574,12 @@
             const date = document.getElementById('exerciseDate').value;
             const mode = document.getElementById('exerciseInputMode').value;
 
-            let calories, exerciseDescription;
+            if (!date) {
+                alert('请选择日期');
+                return;
+            }
+
+            let exercises = [];
 
             if (mode === 'smart') {
                 // 使用AI计算的结果
@@ -1255,40 +1587,48 @@
                     alert('请先点击"AI 计算卡路里"按钮');
                     return;
                 }
-                calories = parsedExerciseCalories;
-                exerciseDescription = document.getElementById('exerciseDescription').value.trim();
+                exercises = parsedExerciseCalories;
             } else {
                 // 手动输入
-                calories = parseFloat(document.getElementById('exerciseCalories').value) || 0;
-                exerciseDescription = `手动输入：${calories}kcal`;
+                const calories = parseFloat(document.getElementById('exerciseCalories').value) || 0;
+                exercises = [{
+                    description: `手动输入：${calories}kcal`,
+                    calories
+                }];
             }
 
-            if (!date) {
-                alert('请选择日期');
-                return;
-            }
-
-            if (!calories) {
+            if (exercises.length === 0) {
                 alert('请输入或计算运动消耗卡路里');
                 return;
             }
 
+            // 计算总卡路里
+            const totalCalories = exercises.reduce((sum, exercise) => sum + (exercise.calories || 0), 0);
+
             const existingEntry = healthData.find(entry => entry.date === date);
             if (existingEntry) {
                 if (!existingEntry.exercise) {
-                    existingEntry.exercise = { calories, exerciseItems: [] };
+                    existingEntry.exercise = { calories: 0, exerciseItems: [] };
                 }
-                existingEntry.exercise.calories += calories;
-                existingEntry.exercise.exerciseItems.push({
-                    description: exerciseDescription,
-                    calories
+                existingEntry.exercise.calories += totalCalories;
+                exercises.forEach(exercise => {
+                    existingEntry.exercise.exerciseItems.push({
+                        description: exercise.description,
+                        calories: exercise.calories || 0
+                    });
                 });
             } else {
                 healthData.push({
                     date: date,
                     weight: null,
                     diet: null,
-                    exercise: { calories, exerciseItems: [{ description: exerciseDescription, calories }] }
+                    exercise: { 
+                        calories: totalCalories, 
+                        exerciseItems: exercises.map(exercise => ({ 
+                            description: exercise.description, 
+                            calories: exercise.calories || 0 
+                        })) 
+                    }
                 });
             }
 
@@ -1296,7 +1636,13 @@
             updateUI();
 
             // 显示添加成功信息
-            alert(`✅ 运动添加成功！\n\n运动：${exerciseDescription}\n消耗卡路里：${calories}kcal`);
+            let message = '✅ 运动添加成功！\n\n';
+            exercises.forEach(exercise => {
+                message += `• ${exercise.description}\n`;
+                message += `  消耗卡路里：${exercise.calories}kcal\n`;
+            });
+            message += `\n总计消耗：${totalCalories}kcal`;
+            alert(message);
 
             clearExerciseInput();
         }
@@ -1307,6 +1653,57 @@
                 healthData = healthData.filter(entry => entry.date !== date);
                 saveData();
                 updateUI();
+            }
+        }
+
+        // 删除单个食物项
+        function deleteFoodItem(date, index) {
+            const entry = healthData.find(e => e.date === date);
+            if (entry && entry.diet && entry.diet.foodItems && entry.diet.foodItems[index]) {
+                const item = entry.diet.foodItems[index];
+                if (confirm(`确定要删除食物"${item.description}"吗？`)) {
+                    // 从foodItems中移除该项
+                    entry.diet.foodItems.splice(index, 1);
+
+                    // 重新计算总数
+                    if (entry.diet.foodItems.length === 0) {
+                        // 如果没有食物项了，将diet设为null
+                        entry.diet = null;
+                    } else {
+                        // 重新计算总和
+                        entry.diet.protein = entry.diet.foodItems.reduce((sum, item) => sum + (item.protein || 0), 0);
+                        entry.diet.fat = entry.diet.foodItems.reduce((sum, item) => sum + (item.fat || 0), 0);
+                        entry.diet.carbs = entry.diet.foodItems.reduce((sum, item) => sum + (item.carbs || 0), 0);
+                        entry.diet.calories = entry.diet.foodItems.reduce((sum, item) => sum + (item.calories || 0), 0);
+                    }
+
+                    saveData();
+                    updateUI();
+                }
+            }
+        }
+
+        // 删除单个运动项
+        function deleteExerciseItem(date, index) {
+            const entry = healthData.find(e => e.date === date);
+            if (entry && entry.exercise && entry.exercise.exerciseItems && entry.exercise.exerciseItems[index]) {
+                const item = entry.exercise.exerciseItems[index];
+                if (confirm(`确定要删除运动"${item.description}"吗？`)) {
+                    // 从exerciseItems中移除该项
+                    entry.exercise.exerciseItems.splice(index, 1);
+
+                    // 重新计算总数
+                    if (entry.exercise.exerciseItems.length === 0) {
+                        // 如果没有运动项了，将exercise设为null
+                        entry.exercise = null;
+                    } else {
+                        // 重新计算总和
+                        entry.exercise.calories = entry.exercise.exerciseItems.reduce((sum, item) => sum + (item.calories || 0), 0);
+                    }
+
+                    saveData();
+                    updateUI();
+                }
             }
         }
 
@@ -1332,7 +1729,6 @@
         function clearExerciseInput() {
             document.getElementById('exerciseCalories').value = '';
             document.getElementById('exerciseDescription').value = '';
-            document.getElementById('userWeight').value = '';
             parsedExerciseCalories = null;
             document.getElementById('exerciseCaloriesResult').style.display = 'none';
         }
@@ -1370,29 +1766,45 @@
                 // 生成食物详情HTML
                 let foodDetailsHTML = '--';
                 if (entry.diet?.foodItems && entry.diet.foodItems.length > 0) {
-                    foodDetailsHTML = entry.diet.foodItems.map(item =>
-                        `<div style="font-size: 0.85em; margin-bottom: 4px;">🍽️ ${item.description} <span style="color: #e67e22;">(${item.calories}kcal)</span></div>`
-                    ).join('');
+                    foodDetailsHTML = entry.diet.foodItems.map((item, index) => {
+                        const deleteBtn = showDeleteButtons ?
+                            `<button class="delete-btn" style="padding: 4px 10px; font-size: 0.75em; margin-left: 8px;" onclick="deleteFoodItem('${entry.date}', ${index})">删除</button>` : '';
+                        return `<div style="font-size: 0.85em; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>🍽️ ${item.description} <span style="color: #e67e22;">(${item.calories}kcal)</span></span>
+                            ${deleteBtn}
+                        </div>`;
+                    }).join('');
                 }
 
                 // 生成运动详情HTML
                 let exerciseDetailsHTML = '--';
                 if (entry.exercise?.exerciseItems && entry.exercise.exerciseItems.length > 0) {
-                    exerciseDetailsHTML = entry.exercise.exerciseItems.map(item =>
-                        `<div style="font-size: 0.85em; margin-bottom: 4px;">💪 ${item.description} <span style="color: #27ae60;">(${item.calories}kcal)</span></div>`
-                    ).join('');
+                    exerciseDetailsHTML = entry.exercise.exerciseItems.map((item, index) => {
+                        const deleteBtn = showDeleteButtons ?
+                            `<button class="delete-btn" style="padding: 4px 10px; font-size: 0.75em; margin-left: 8px;" onclick="deleteExerciseItem('${entry.date}', ${index})">删除</button>` : '';
+                        return `<div style="font-size: 0.85em; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>💪 ${item.description} <span style="color: #27ae60;">(${item.calories}kcal)</span></span>
+                            ${deleteBtn}
+                        </div>`;
+                    }).join('');
                 }
+
+                const toggleBtnText = showDeleteButtons ? '隐藏删除' : '删除单个';
+                const toggleBtnStyle = showDeleteButtons ? 'background: #95a5a6;' : '';
 
                 tbody.innerHTML += `
                     <tr>
-                        <td>${entry.date}</td>
-                        <td>${entry.weight || '--'}</td>
-                        <td style="max-width: 300px;">${foodDetailsHTML}</td>
-                        <td style="max-width: 300px;">${exerciseDetailsHTML}</td>
-                        <td>${entry.diet?.calories || '--'}</td>
-                        <td>${entry.exercise?.calories || '--'}</td>
-                        <td class="${balanceClass}">${balanceText}</td>
-                        <td><button class="delete-btn" onclick="deleteEntry('${entry.date}')">删除</button></td>
+                        <td data-label="日期">${entry.date}</td>
+                        <td data-label="体重">${entry.weight || '--'}</td>
+                        <td data-label="食物详情" style="max-width: 300px;">${foodDetailsHTML}</td>
+                        <td data-label="运动详情" style="max-width: 300px;">${exerciseDetailsHTML}</td>
+                        <td data-label="总摄入">${entry.diet?.calories || '--'}</td>
+                        <td data-label="总消耗">${entry.exercise?.calories || '--'}</td>
+                        <td data-label="卡路里平衡" class="${balanceClass}">${balanceText}</td>
+                        <td data-label="操作" style="display: flex; flex-direction: column; gap: 5px;">
+                            <button class="delete-btn" onclick="deleteEntry('${entry.date}')">删除全天</button>
+                            <button class="delete-btn" onclick="toggleShowDeleteButtons()" style="${toggleBtnStyle}">${toggleBtnText}</button>
+                        </td>
                     </tr>
                 `;
             });
@@ -2270,6 +2682,22 @@
             }
 
             try {
+                // 获取自定义提示词
+                const customPrompt = localStorage.getItem('customAnalysisPrompt');
+                
+                // 构建基础数据字符串
+                const baseData = `记录总天数：${totalDays}天\n\n体重情况：${weightSummary}\n\n饮食情况：${dietSummary}\n\n运动情况：${exerciseSummary}`;
+
+                // 构建完整的用户消息
+                let userMessage;
+                if (customPrompt && customPrompt.trim()) {
+                    // 使用自定义提示词
+                    userMessage = `数据：\n${baseData}\n\n${customPrompt}`;
+                } else {
+                    // 使用默认提示词
+                    userMessage = `请综合分析以下整体健康数据：\n\n${baseData}\n\n请重点分析以下内容：\n\n1. 饮食结构分析\n   - 蛋白质、脂肪、碳水化合物的比例是否合理\n   - 每日卡路里摄入是否合适\n   - 饮食是否均衡健康\n\n2. 运动量分析\n   - 每日运动消耗是否足够\n   - 运动频率和强度如何\n   - 运动类型是否多样化\n\n3. 体重预测\n   - 根据当前的饮食摄入和运动消耗强度\n   - 结合历史体重变化趋势\n   - 预测如果保持这个强度，明天的体重可能是多少\n   - 给出预测的依据和范围\n\n请用简洁明了的语言，分点列出，给出专业而实用的建议。`;
+                }
+
                 const response = await fetch(`${apiEndpoint}/chat/completions`, {
                     method: 'POST',
                     headers: {
@@ -2285,7 +2713,7 @@
                             },
                             {
                                 role: 'user',
-                                content: `请综合分析以下整体健康数据：\n\n记录总天数：${totalDays}天\n\n体重情况：${weightSummary}\n\n饮食情况：${dietSummary}\n\n运动情况：${exerciseSummary}\n\n请给出全面的综合分析，包括：\n1. 整体健康状况评估\n2. 饮食与运动的平衡分析\n3. 体重变化与能量摄入的关系\n4. 当前生活方式的健康程度\n5. 具体的综合改进建议\n6. 短期和长期目标建议\n7. 鼓励性的总结\n\n请用简洁明了的语言，分点列出，给出专业而实用的建议。`
+                                content: userMessage
                             }
                         ],
                         temperature: 0.7
@@ -2321,6 +2749,103 @@
             } catch (error) {
                 console.error('分析失败:', error);
                 analysisDiv.innerHTML = `<p style="color: #e74c3c;">❌ 分析失败：${error.message}</p>`;
+            }
+        }
+
+        // AI 智能问答
+        async function askAIQuestion() {
+            const apiKey = localStorage.getItem('openaiApiKey');
+            const apiEndpoint = localStorage.getItem('apiEndpoint') || 'https://vg.v1api.cc/v1';
+            const modelName = localStorage.getItem('modelName') || 'gpt-4o-mini';
+            const question = document.getElementById('aiQuestion').value.trim();
+
+            if (!apiKey) {
+                alert('请先配置 API Key');
+                return;
+            }
+
+            if (!question) {
+                alert('请输入问题');
+                return;
+            }
+
+            if (healthData.length === 0) {
+                document.getElementById('aiAnswer').innerHTML = '<p style="color: #999; font-style: italic;">暂无数据，请先添加健康记录。</p>';
+                return;
+            }
+
+            const answerDiv = document.getElementById('aiAnswer');
+            answerDiv.innerHTML = '<p style="color: #667eea;">🔄 正在思考...</p>';
+
+            try {
+                // 准备详细的健康数据
+                const detailedData = healthData.map(entry => {
+                    let entryText = `日期：${entry.date}\n`;
+                    if (entry.weight) entryText += `体重：${entry.weight}kg\n`;
+                    if (entry.diet && entry.diet.foodItems) {
+                        entryText += `食物：${entry.diet.foodItems.map(item => item.description).join('，')}\n`;
+                        entryText += `总摄入：${entry.diet.calories}kcal（蛋白质${entry.diet.protein}g，脂肪${entry.diet.fat}g，碳水${entry.diet.carbs}g）\n`;
+                    }
+                    if (entry.exercise && entry.exercise.exerciseItems) {
+                        entryText += `运动：${entry.exercise.exerciseItems.map(item => item.description).join('，')}\n`;
+                        entryText += `总消耗：${entry.exercise.calories}kcal\n`;
+                    }
+                    if (entry.diet && entry.exercise) {
+                        const balance = entry.diet.calories - entry.exercise.calories;
+                        entryText += `卡路里平衡：${balance > 0 ? '+' : ''}${balance}kcal\n`;
+                    }
+                    return entryText;
+                }).join('\n------------------\n');
+
+                const response = await fetch(`${apiEndpoint}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一个专业的健康管理和营养学专家。请基于用户提供的详细健康数据回答问题。你的回答应该：\n1. 基于数据给出准确的分析\n2. 提供实用、可操作的建议\n3. 用友好、鼓励的语气\n4. 如果数据不足以回答，请如实说明'
+                            },
+                            {
+                                role: 'user',
+                                content: `问题：${question}\n\n以下是我的详细健康数据：\n${detailedData}\n\n请基于以上数据回答我的问题。`
+                            }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                const answer = data.choices[0].message.content;
+
+                // 格式化显示回答
+                const formattedAnswer = answer
+                    .replace(/\n/g, '<br>')
+                    .replace(/•/g, '📌')
+                    .replace(/1\./g, '✅')
+                    .replace(/2\./g, '✅')
+                    .replace(/3\./g, '✅')
+                    .replace(/4\./g, '✅')
+                    .replace(/5\./g, '✅');
+
+                answerDiv.innerHTML = `
+                    <div style="font-size: 0.95em; line-height: 1.6;">
+                        ${formattedAnswer}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('回答失败:', error);
+                answerDiv.innerHTML = `<p style="color: #e74c3c;">❌ 回答失败：${error.message}</p>`;
             }
         }
 
