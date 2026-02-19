@@ -200,6 +200,52 @@
             margin-bottom: 40px;
         }
 
+        /* 收起/展开按钮样式 */
+        .collapse-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .collapse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .collapse-btn::before {
+            content: '▼';
+            transition: transform 0.3s ease;
+        }
+
+        .collapse-btn.collapsed::before {
+            content: '▶';
+            transform: rotate(-90deg);
+        }
+
+        /* 收起内容区域样式 */
+        .history-content {
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+            max-height: 2000px;
+            opacity: 1;
+            overflow: hidden;
+        }
+
+        .history-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
         .history-section h3 {
             color: #667eea;
             margin-bottom: 20px;
@@ -886,7 +932,10 @@
 
         <div class="history-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0;">📋 历史记录</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <h3 style="margin: 0;">📋 历史记录</h3>
+                    <button class="collapse-btn collapsed" onclick="toggleCollapse('historyContent', this)">收起/展开</button>
+                </div>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn" onclick="clearData()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); font-size: 0.9em; padding: 10px 20px;">🗑️ 清空数据</button>
                     <button class="btn" onclick="exportData()" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); font-size: 0.9em; padding: 10px 20px;">📤 导出数据</button>
@@ -894,46 +943,55 @@
                     <input type="file" id="importFileInput" accept=".json" onchange="importData(event)" style="display: none;">
                 </div>
             </div>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>体重 (kg)</th>
-                        <th>食物详情</th>
-                        <th>运动详情</th>
-                        <th>总摄入 (kcal)</th>
-                        <th>总消耗 (kcal)</th>
-                        <th>卡路里平衡</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTableBody">
-                </tbody>
-            </table>
+            <div id="historyContent" class="history-content collapsed">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>体重 (kg)</th>
+                            <th>食物详情</th>
+                            <th>运动详情</th>
+                            <th>总摄入 (kcal)</th>
+                            <th>总消耗 (kcal)</th>
+                            <th>卡路里平衡</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="history-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0;">📏 围度历史记录</h3>
-                <button class="btn" onclick="clearMeasurements()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); font-size: 0.9em; padding: 10px 20px;">🗑️ 清空围度</button>
-                <button class="btn" onclick="exportMeasurements()" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); font-size: 0.9em; padding: 10px 20px;">📤 导出围度</button>
-                <button class="btn" onclick="document.getElementById('importMeasurementsInput').click()" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); font-size: 0.9em; padding: 10px 20px;">📥 导入围度</button>
-                <input type="file" id="importMeasurementsInput" accept=".json" onchange="importMeasurements(event)" style="display: none;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <h3 style="margin: 0;">📏 围度历史记录</h3>
+                    <button class="collapse-btn collapsed" onclick="toggleCollapse('measurementContent', this)">收起/展开</button>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="clearMeasurements()" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); font-size: 0.9em; padding: 10px 20px;">🗑️ 清空围度</button>
+                    <button class="btn" onclick="exportMeasurements()" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); font-size: 0.9em; padding: 10px 20px;">📤 导出围度</button>
+                    <button class="btn" onclick="document.getElementById('importMeasurementsInput').click()" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); font-size: 0.9em; padding: 10px 20px;">📥 导入围度</button>
+                    <input type="file" id="importMeasurementsInput" accept=".json" onchange="importMeasurements(event)" style="display: none;">
+                </div>
             </div>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>日期</th>
-                        <th>胸围 (cm)</th>
-                        <th>腰围 (cm)</th>
-                        <th>臂围 (cm)</th>
-                        <th>腿围 (cm)</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="measurementTableBody">
-                </tbody>
-            </table>
+            <div id="measurementContent" class="history-content collapsed">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>胸围 (cm)</th>
+                            <th>腰围 (cm)</th>
+                            <th>臂围 (cm)</th>
+                            <th>腿围 (cm)</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="measurementTableBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="charts-section">
@@ -3120,10 +3178,7 @@
                 const formattedAnalysis = analysis
                     .replace(/\n/g, '<br>')
                     .replace(/•/g, '📌')
-                    .replace(/1\./g, '✅')
-                    .replace(/2\./g, '✅')
-                    .replace(/3\./g, '✅')
-                    .replace(/4\./g, '✅');
+                    .replace(/^(\d+)\.\s/gm, '✅ $1. ');
 
                 analysisDiv.innerHTML = `
                     <div style="font-size: 0.95em; line-height: 1.6;">
@@ -3813,13 +3868,7 @@
                 const formattedAnalysis = analysis
                     .replace(/\n/g, '<br>')
                     .replace(/•/g, '📌')
-                    .replace(/1\./g, '✅')
-                    .replace(/2\./g, '✅')
-                    .replace(/3\./g, '✅')
-                    .replace(/4\./g, '✅')
-                    .replace(/5\./g, '✅')
-                    .replace(/6\./g, '✅')
-                    .replace(/7\./g, '✅');
+                    .replace(/^(\d+)\.\s/gm, '✅ $1. ');
 
                 analysisDiv.innerHTML = `
                     <div style="font-size: 0.95em; line-height: 1.6;">
@@ -3922,11 +3971,7 @@
                 const formattedAnswer = answer
                     .replace(/\n/g, '<br>')
                     .replace(/•/g, '📌')
-                    .replace(/1\./g, '✅')
-                    .replace(/2\./g, '✅')
-                    .replace(/3\./g, '✅')
-                    .replace(/4\./g, '✅')
-                    .replace(/5\./g, '✅');
+                    .replace(/^(\d+)\.\s/gm, '✅ $1. ');
 
                 answerDiv.innerHTML = `
                     <div style="font-size: 0.95em; line-height: 1.6;">
@@ -3937,6 +3982,24 @@
             } catch (error) {
                 console.error('回答失败:', error);
                 answerDiv.innerHTML = `<p style="color: #e74c3c;">❌ 回答失败：${error.message}</p>`;
+            }
+        }
+
+        // 收起/展开功能
+        function toggleCollapse(contentId, btn) {
+            const content = document.getElementById(contentId);
+            const isCollapsed = content.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                // 展开
+                content.classList.remove('collapsed');
+                btn.classList.remove('collapsed');
+                btn.textContent = '收起';
+            } else {
+                // 收起
+                content.classList.add('collapsed');
+                btn.classList.add('collapsed');
+                btn.textContent = '展开';
             }
         }
 
